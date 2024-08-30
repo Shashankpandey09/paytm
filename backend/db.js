@@ -28,6 +28,19 @@ const UserSchema=new mongoose.Schema({
         trim: true,
         maxLength: 50
     }
+    
 });
+const AccountSchema=new mongoose.Schema({
+ userId:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'USER',// referencing to the User model ,restricting so that account is not created for user that does not exist
+    required:true
+ },
+ balance:{
+    type:Number,
+    required:true
+}
+})
 const USER=mongoose.model('USER',UserSchema);
-module.exports={USER};
+const Account=mongoose.model("Account",AccountSchema);
+module.exports={USER,Account};

@@ -1,6 +1,6 @@
 const express = require("express");
 const JWT = require("jsonwebtoken");
-const { USER } = require("../db");
+const { USER, Account } = require("../db");
 const { JWT_SECRET_KEY } = require("../config");
 const authMiddleware = require("../middleware");
 const UserRouter = express.Router();
@@ -36,6 +36,8 @@ UserRouter.post("/signup", async (req, res) => {
     message: "User created successfully",
     token: token,
   });
+  await Account.create({userId:existingUser._id,balance:1+Math.random()*10000});
+  
 });
 //sign In route
 const SignInSchema = Zod.object({
@@ -80,6 +82,31 @@ UserRouter.put('/',authMiddleware,async(req,res)=>{
   res.json({
     message: "Updated successfully"
 })
+})
+UserRouter.get('/bulk',authMiddleware,async(req,res)=>{
+  const filter=req.query.filter||"";
+  const users=await USER.find({
+    $or:[
+      {
+        firstName:{
+          "$regex":filter
+        }
+      },
+      {
+        lastName:{
+          "$regex":filter
+        }
+      }
+    ]
+  })
+  return res.json({
+    users:users.map(user=>({
+      username:user.username,
+      firstName:user.firstName,
+      lastName:user.lastName,
+      _id:user._id
+    }))
+  })
 })
 
 module.exports = UserRouter;
