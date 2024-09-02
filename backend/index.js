@@ -10,6 +10,6 @@ app.use(express.json());//for parsing body and putting the body in the req.body
 
 app.use("/api/v1", rootRouter);
 
-app.listen(PORT,(req,res)=>{
+app.listen(PORT,()=>{
     console.log(`listening on port ${PORT}`);
 })
