@@ -1,11 +1,11 @@
 import { useState } from "react";
 import Button from "./Button";
 import { useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 
 const Users = () => {
   // Replace with backend call
-  const navigate=useNavigate();
+ 
   const [users, setUsers] = useState([
     {
       firstName: "Shashank",
@@ -39,6 +39,7 @@ const Users = () => {
 };
 
 function User({ user }) {
+  const navigate=useNavigate();
   return (
     <div className="flex justify-between items-center p-4 bg-gray-50 rounded-md shadow-sm">
       <div className="flex items-center">
@@ -49,7 +50,7 @@ function User({ user }) {
           {user.firstName} {user.lastName}
         </div>
       </div>
-      <Button label="Send Money" onClick={()=>navigate(`/Send?${userId}&${user.firstName}`)} />
+      <Button label="Send Money" onClick={()=>navigate(`/send?id=${user._id}&name=${user.firstName}`)} />
     </div>
   );
 }

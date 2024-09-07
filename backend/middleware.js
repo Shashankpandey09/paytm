@@ -10,16 +10,16 @@ const authMiddleware = (req, res, next) => {
         if (token) {
             JWT.verify(token, JWT_SECRET_KEY, (err, decodedData) => {
                 if (err) {
-                    return res.status(403).json({ message: "Invalid token", error: err });
+                    return res.status(401).json({ message: "Invalid token", error: err });
                 }
                 req.user = decodedData;
                 next();
             });
         } else {
-            return res.status(403).json({ message: "Token not valid" });
+            return res.status(401).json({ message: "Token not valid" });
         }
     } else {
-        return res.status(403).json({ message: "Authorization header missing or malformed" });
+        return res.status(401).json({ message: "Authorization header missing or malformed" });
     }
 };
 module.exports=authMiddleware;

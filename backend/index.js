@@ -1,12 +1,14 @@
 const express = require("express");
-const rootRouter=require('./routes/index')
+
 const app=express();
+app.use(express.json());//for parsing body and putting the body in the req.body
 const cors=require('cors');
 const PORT=3000; 
+const rootRouter=require('./routes/index')
 
 
 app.use(cors());
-app.use(express.json());//for parsing body and putting the body in the req.body
+
 
 app.use("/api/v1", rootRouter);
 

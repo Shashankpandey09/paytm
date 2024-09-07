@@ -2,6 +2,18 @@ const mongoose=require('mongoose');
 mongoose.connect("mongodb+srv://shashankpandey0910:qkVRBnMoeHmHKlez@cluster0.p5ln8mo.mongodb.net/Basic-Paytm");
 //creating UserSchema;
 const UserSchema=new mongoose.Schema({
+    firstName: {
+        type: String,
+        required: true,
+        trim: true,
+        maxLength: 50
+    },
+    lastName: {
+        type: String,
+        required: true,
+        trim: true,
+        maxLength: 50
+    },
     username: {
         type: String,
         required: true,
@@ -15,18 +27,6 @@ const UserSchema=new mongoose.Schema({
         type: String,
         required: true,
         minLength: 6
-    },
-    firstName: {
-        type: String,
-        required: true,
-        trim: true,
-        maxLength: 50
-    },
-    lastName: {
-        type: String,
-        required: true,
-        trim: true,
-        maxLength: 50
     }
     
 });
