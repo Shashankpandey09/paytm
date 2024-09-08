@@ -7,8 +7,7 @@ import { useEffect, useState } from "react";
 import { SIGNUP } from "../Slices/SignUp";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer,toast } from "../toastConfig";
 
 const SignUp = () => {
   const [firstName, setFirstName] = useState("");
@@ -20,9 +19,7 @@ const SignUp = () => {
   const { data:{token}, status, error } = useSelector((store) => store.signup);
 
   useEffect(() => {
-    console.log('Status:', status);
-    console.log('Token:', token);
-    console.log('Error:', error);
+  
     if (status === "succeeded" && token) {
       toast.success("Signed up successfully!");
       const id = setTimeout(() => navigate('/dashboard'), 1000);
@@ -39,7 +36,8 @@ const SignUp = () => {
       toast.error("All fields are required!");
       return;
     }
-    dispatch(SIGNUP({ firstName, lastName, username: Email, password }));
+    const data={ firstName, lastName, username: Email, password }
+    dispatch(SIGNUP([data,{type:"signup"}]));
   };
 
   return (

@@ -64,7 +64,7 @@ UserRouter.post("/signIn", async (req, res) => {
 
     if (existingUser) {
       const token = JWT.sign({ user_id: existingUser._id }, JWT_SECRET_KEY);
-      return res.status(200).json({ message: "Logged in successfully", token });
+      return res.status(200).json({ message: "Logged in successfully", token,firstName:existingUser.firstName });
     }
 
     return res.status(401).json({ message: "Invalid credentials" });

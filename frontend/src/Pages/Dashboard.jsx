@@ -7,7 +7,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-100">
       <Appbar />
       <div className="w-3/4 mx-auto mt-8">
-        <Balance value={1000} />
+        <Balance  />
         <Users />
       </div>
     </div>

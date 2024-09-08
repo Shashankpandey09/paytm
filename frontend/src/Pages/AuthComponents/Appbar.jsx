@@ -2,10 +2,11 @@
 import { useNavigate } from "react-router-dom";
 import { removeToken } from "../../Slices/SignUp";
 import Button from "./Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 const Appbar = () => {
  const dispatch=useDispatch();
  const navigate=useNavigate();
+ const{user}=useSelector(s=>s.signup)
     return (
       <div className="pt-4 px-4  mx-auto">
         <div className="shadow h-14 flex justify-between items-center mt-9 px-2 bg-white rounded-md">
@@ -16,12 +17,14 @@ const Appbar = () => {
             <div className="mr-4 text-lg font-medium">
               Hello
             </div>
-            <div className="rounded-full h-12 w-12 bg-slate-200  mr-2 flex items-center justify-center text-xl font-semibold">
-              U
+            <div className="rounded-full uppercase h-12 w-12 bg-slate-200  mr-2 flex items-center justify-center text-xl font-semibold">
+              {user &&user[0]}
             </div>
-            <Button label={"logout"} onClick={()=>{dispatch(removeToken())
+         <div className="mt-3" >
+         <Button label={"logout"} onClick={()=>{dispatch(removeToken())
               navigate("/signIn")
             }}/>
+         </div>
           </div>
         </div>
       </div>

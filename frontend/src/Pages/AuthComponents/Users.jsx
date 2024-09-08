@@ -1,11 +1,9 @@
 import { useState } from "react";
 import Button from "./Button";
-import { useEffect } from "react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Users = () => {
   // Replace with backend call
- 
   const [users, setUsers] = useState([
     {
       firstName: "Shashank",
@@ -13,14 +11,14 @@ const Users = () => {
       _id: 1,
     },
     {
-        firstName: "Shashank",
-        lastName: "Pandey",
-        _id: 2,
-      }
+      firstName: "Shashank",
+      lastName: "Pandey",
+      _id: 2,
+    },
   ]);
 
   return (
-    <div className="mt-6 p-4 bg-white shadow rounded-md">
+    <div className="mt-6 p-4 bg-white shadow rounded-md max-w-screen mx-auto">
       <div className="font-bold text-lg mb-4">Users</div>
       <div className="mb-4">
         <input
@@ -39,9 +37,9 @@ const Users = () => {
 };
 
 function User({ user }) {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   return (
-    <div className="flex justify-between items-center p-4 bg-gray-50 rounded-md shadow-sm">
+    <div className="flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 rounded-md shadow-sm">
       <div className="flex items-center">
         <div className="h-12 w-12 bg-slate-300 flex justify-center items-center rounded-full text-xl font-semibold text-white">
           {user.firstName[0]}
@@ -50,7 +48,13 @@ function User({ user }) {
           {user.firstName} {user.lastName}
         </div>
       </div>
-      <Button label="Send Money" onClick={()=>navigate(`/send?id=${user._id}&name=${user.firstName}`)} />
+      <Button
+        label="Send Money"
+        onClick={() =>
+          navigate(`/send?id=${user._id}&name=${user.firstName}`)
+        }
+        className="mt-4 sm:mt-0 sm:ml-4"
+      />
     </div>
   );
 }
