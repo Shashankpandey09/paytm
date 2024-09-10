@@ -37,7 +37,7 @@ UserRouter.post("/signup", async (req, res) => {
     const token = JWT.sign({ user_id: user._id }, JWT_SECRET_KEY);
     await Account.create({ userId: user._id, balance: 1 + Math.random() * 10000 });
 
-    return res.status(201).json({ message: "User created successfully", token });
+    return res.status(201).json({ message: "User created successfully", token,username:user.username });
   } catch (err) {
     console.error("Error in /signup route:", err);
     return res.status(500).json({ message: "Internal server error" });
@@ -64,7 +64,7 @@ UserRouter.post("/signIn", async (req, res) => {
 
     if (existingUser) {
       const token = JWT.sign({ user_id: existingUser._id }, JWT_SECRET_KEY);
-      return res.status(200).json({ message: "Logged in successfully", token,firstName:existingUser.firstName });
+      return res.status(200).json({ message: "Logged in successfully", token,username:existingUser.username });
     }
 
     return res.status(401).json({ message: "Invalid credentials" });
@@ -99,26 +99,31 @@ UserRouter.put('/', authMiddleware, async (req, res) => {
   }
 });
 
-// Bulk User Route
 UserRouter.get('/bulk', authMiddleware, async (req, res) => {
-  const filter = req.query.filter || "";
+  const filter = req.query.filter?.trim() || "";
 
   try {
-    const users = await USER.find({
-      // querying in database doing LIKE query (similar ti SQL)
-      $or: [
-        { firstName: { "$regex": filter, "$options": "i" } },
-        { lastName: { "$regex": filter, "$options": "i" } }
-      ]
-    });
+    // Apply filtering only if filter is non-empty
+    const query = filter
+      ? {
+          $or: [
+            { firstName: { $regex: filter, $options: "i" } }, // Case-insensitive regex
+            { lastName: { $regex: filter, $options: "i" } }
+          ]
+        }
+      : {};
+
+    const users = await USER.find(query);
 
     return res.json({
-      users: users.map(user => ({
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        _id: user._id
-      }))
+      users: users
+        .filter((me) => req.user.user_id.toString() !== me._id.toString())
+        .map((user) => ({
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          _id: user._id,
+        }))
     });
   } catch (err) {
     console.error("Error in /bulk route:", err);

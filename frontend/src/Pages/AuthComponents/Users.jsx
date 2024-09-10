@@ -1,21 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 const Users = () => {
-  // Replace with backend call
-  const [users, setUsers] = useState([
-    {
-      firstName: "Shashank",
-      lastName: "Pandey",
-      _id: 1,
-    },
-    {
-      firstName: "Shashank",
-      lastName: "Pandey",
-      _id: 2,
-    },
-  ]);
+  const [users, setUsers] = useState([]);
+  const [debouncedValue, setDebouncedValue] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const { data: { token } } = useSelector(state => state.signup);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setDebouncedValue(inputValue);
+    }, 1000);
+
+    return () => {
+      clearTimeout(id);
+    };
+  }, [inputValue]);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        if (debouncedValue) {
+          const resp = await axios.get(`http://localhost:3000/api/v1/user/bulk?filter=${debouncedValue}`, {
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+          });
+          console.log(resp.data?.users);
+          setUsers(resp.data?.users);
+        } else {
+          setUsers([]);  // Reset users if input is cleared
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getUsers();
+  }, [debouncedValue, token]);
 
   return (
     <div className="mt-6 p-4 bg-white shadow rounded-md max-w-screen mx-auto">
@@ -23,12 +49,14 @@ const Users = () => {
       <div className="mb-4">
         <input
           type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
           placeholder="Search users..."
           className="w-full px-3 py-2 border rounded-lg border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div className="space-y-4">
-        {users.map((user) => (
+        {users?.map((user) => (
           <User key={user._id} user={user} />
         ))}
       </div>

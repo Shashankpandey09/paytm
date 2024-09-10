@@ -45,9 +45,9 @@ export const SignUpSlice = createSlice({
       .addCase(SIGNUP.fulfilled, (state, action) => {
         state.data.token = action.payload.token;
         state.status = "succeeded";
-        state.user=action.payload?.firstName
+        state.user=action.payload?.username
         localStorage.setItem("payToken", state.data.token);
-        localStorage.setItem("User", action.payload.firstName); // Store the token in localStorage
+        localStorage.setItem("User", action.payload.username); // Store the token in localStorage
       })
       .addCase(SIGNUP.rejected, (state, action) => {
         state.status = "failed";
