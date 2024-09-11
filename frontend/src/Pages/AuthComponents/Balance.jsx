@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 const Balance = () => {
   const [balance,setBalance]=useState(0);
   const {token}=useSelector(s=>s.signup.data)
+  const {result}=useSelector(s=>s.transfer)
   useEffect(()=>{
     const getBal=async()=>{
    try {
@@ -23,7 +24,7 @@ const Balance = () => {
   
 }
 getBal();
-  },[])
+  },[result])
     return (
       <div className="flex items-center  pt-4 mt-6">
         <div className="font-bold text-lg">

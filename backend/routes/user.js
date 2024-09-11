@@ -60,7 +60,7 @@ UserRouter.post("/signIn", async (req, res) => {
   }
 
   try {
-    const existingUser = await USER.findOne({ username: body.username });
+    const existingUser = await USER.findOne({ username: body.username,password:body.password });
 
     if (existingUser) {
       const token = JWT.sign({ user_id: existingUser._id }, JWT_SECRET_KEY);
@@ -100,7 +100,7 @@ UserRouter.put('/', authMiddleware, async (req, res) => {
 });
 
 UserRouter.get('/bulk', authMiddleware, async (req, res) => {
-  const filter = req.query.filter?.trim() || "";
+  const filter = req.query.filter || "";
 
   try {
     // Apply filtering only if filter is non-empty

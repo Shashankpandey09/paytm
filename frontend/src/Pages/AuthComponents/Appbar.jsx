@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { removeToken } from "../../Slices/SignUp";
 import Button from "./Button";
 import { useDispatch, useSelector } from "react-redux";
+import {toast, ToastContainer} from '../../toastConfig'
 const Appbar = () => {
  const dispatch=useDispatch();
  const navigate=useNavigate();
  const{user}=useSelector(s=>s.signup)
     return (
       <div className="pt-4 px-4  mx-auto">
+        <ToastContainer/>
         <div className="shadow h-14 flex justify-between items-center mt-9 px-2 bg-white rounded-md">
           <div className="ml-4 text-lg font-semibold">
             PayTM App
@@ -21,10 +23,12 @@ const Appbar = () => {
               {user &&user[0]}
             </div>
          <div className="mt-3" >
-         <Button label={"logout"} onClick={()=>{dispatch(removeToken())
+         <Button label={"logout"} onClick={()=>{toast.success("logged Out")
+          dispatch(removeToken())
               navigate("/signIn")
             }}/>
          </div>
+         
           </div>
         </div>
       </div>

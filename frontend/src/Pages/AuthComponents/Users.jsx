@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { removePrev } from "../../Slices/Transfer";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
-  const [debouncedValue, setDebouncedValue] = useState('');
-  const [inputValue, setInputValue] = useState('');
-  const { data: { token } } = useSelector(state => state.signup);
+  const [debouncedValue, setDebouncedValue] = useState("");
+  const [inputValue, setInputValue] = useState("");
+  const {
+    data: { token },
+  } = useSelector((state) => state.signup);
 
   useEffect(() => {
     const id = setTimeout(() => {
@@ -24,16 +27,19 @@ const Users = () => {
     const getUsers = async () => {
       try {
         if (debouncedValue) {
-          const resp = await axios.get(`http://localhost:3000/api/v1/user/bulk?filter=${debouncedValue}`, {
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
+          const resp = await axios.get(
+            `http://localhost:3000/api/v1/user/bulk?filter=${debouncedValue}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
             }
-          });
+          );
           console.log(resp.data?.users);
           setUsers(resp.data?.users);
         } else {
-          setUsers([]);  // Reset users if input is cleared
+          setUsers([]); // Reset users if input is cleared
         }
       } catch (error) {
         console.log(error);
@@ -66,6 +72,7 @@ const Users = () => {
 
 function User({ user }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 rounded-md shadow-sm">
       <div className="flex items-center">
@@ -78,9 +85,10 @@ function User({ user }) {
       </div>
       <Button
         label="Send Money"
-        onClick={() =>
-          navigate(`/send?id=${user._id}&name=${user.firstName}`)
-        }
+        onClick={() => {
+          navigate(`/send?id=${user._id}&name=${user.firstName}`);
+          dispatch(removePrev());
+        }}
         className="mt-4 sm:mt-0 sm:ml-4"
       />
     </div>
