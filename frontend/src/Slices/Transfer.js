@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
+const BASE_URL=import.meta.env.VITE_REACT_APP_BACKEND_URL
 const initialState = {
   result: null,
   error: null,
@@ -13,7 +13,7 @@ export const Transfer = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const resp = await axios.post(
-        `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/v1/account/transfer`,
+        `${BASE_URL}/api/v1/account/transfer`,
         data,
         {
           headers: {

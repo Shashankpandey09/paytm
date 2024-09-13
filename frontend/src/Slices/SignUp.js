@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from 'axios';
+const BASE_URL=import.meta.env.VITE_REACT_APP_BACKEND_URL
+
 
 const initialState = {
   data: {
@@ -14,7 +16,8 @@ export const SIGNUP = createAsyncThunk(
   "signup",
   async (userData, { rejectWithValue}) => {
     try {
-      const resp = await axios.post(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/v1/user/${userData[1].type}`, userData[0]); 
+     
+      const resp = await axios.post(`${BASE_URL}/api/v1/user/${userData[1].type}`, userData[0]); 
       console.log(resp.data);
       // Directly pass userData as the body
 

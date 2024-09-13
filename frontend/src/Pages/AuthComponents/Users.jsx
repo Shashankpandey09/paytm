@@ -10,6 +10,7 @@ const Users = () => {
   const [debouncedValue, setDebouncedValue] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false); // For loading state
+  const BASE_URL=import.meta.env.VITE_REACT_APP_BACKEND_URL
   const {
     data: { token },
   } = useSelector((state) => state.signup);
@@ -30,9 +31,9 @@ const Users = () => {
     const getUsers = async () => {
       setLoading(true); // Set loading true before API call
       try {
-        let url = `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/v1/user/users`; // Default URL for all users
+        let url = `${BASE_URL}/api/v1/user/users`; // Default URL for all users
         if (debouncedValue) {
-          url = `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/v1/user/bulk?filter=${debouncedValue}`; // If searching, use filter
+          url = `${BASE_URL}/api/v1/user/bulk?filter=${debouncedValue}`; // If searching, use filter
         }
 
         const resp = await axios.get(url, {
@@ -41,7 +42,7 @@ const Users = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-         console.log(resp.data)
+   
         setUsers(resp.data?.users || []);
       } catch (error) {
         console.log(error);

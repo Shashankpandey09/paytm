@@ -4,10 +4,9 @@ const { USER, Account } = require("../db");
 const authMiddleware = require("../middleware");
 const { z } = require("zod");
 require('dotenv').config();
-const mongoose=require('mongoose')
+const mongoose = require('mongoose');
 const UserRouter = express.Router();
-const JWT_SECRET_KEY  = process.env.JWT_SECRET_KEY
-
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 // Sign-Up Schema
 const signUpSchema = z.object({
@@ -28,7 +27,6 @@ UserRouter.post("/signup", async (req, res) => {
 
   try {
     const existingUser = await USER.findOne({ username: body.username });
-     console.log(body)
     if (existingUser) {
       return res.status(400).json({ message: "Email already taken" });
     }
@@ -39,7 +37,7 @@ UserRouter.post("/signup", async (req, res) => {
     const token = JWT.sign({ user_id: user._id }, JWT_SECRET_KEY);
     await Account.create({ userId: user._id, balance: 1 + Math.random() * 10000 });
 
-    return res.status(201).json({ message: "User created successfully", token,username:user.username });
+    return res.status(201).json({ message: "User created successfully", token, username: user.username });
   } catch (err) {
     console.error("Error in /signup route:", err);
     return res.status(500).json({ message: "Internal server error" });
@@ -54,19 +52,19 @@ const signInSchema = z.object({
 
 // Sign-In Route
 UserRouter.post("/signIn", async (req, res) => {
-  const {data} = req.body;
-  const { success, error } = signInSchema.safeParse(data);
+  const body = req.body; // Corrected from destructuring data
+  const { success, error } = signInSchema.safeParse(body);
 
   if (!success) {
     return res.status(400).json({ message: "Error while logging in", errors: error.errors });
   }
 
   try {
-    const existingUser = await USER.findOne({ username: body.username,password:body.password });
+    const existingUser = await USER.findOne({ username: body.username, password: body.password });
 
     if (existingUser) {
       const token = JWT.sign({ user_id: existingUser._id }, JWT_SECRET_KEY);
-      return res.status(200).json({ message: "Logged in successfully", token,username:existingUser.username });
+      return res.status(200).json({ message: "Logged in successfully", token, username: existingUser.username });
     }
 
     return res.status(401).json({ message: "Invalid credentials" });
@@ -119,7 +117,7 @@ UserRouter.get('/bulk', authMiddleware, async (req, res) => {
 
     return res.json({
       users: users
-        .filter((me) => req.user.user_id.toString() !== me._id.toS)
+        .filter((me) => req.user.user_id.toString() !== me._id.toString()) // Corrected toString()
         .map((user) => ({
           username: user.username,
           firstName: user.firstName,
@@ -132,6 +130,7 @@ UserRouter.get('/bulk', authMiddleware, async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 });
+
 UserRouter.get('/users', authMiddleware, async (req, res) => {
   const { user_id } = req.user;
 
@@ -148,8 +147,5 @@ UserRouter.get('/users', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error fetching users', error });
   }
 });
-
-
-
 
 module.exports = UserRouter;
