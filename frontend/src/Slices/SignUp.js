@@ -14,7 +14,7 @@ export const SIGNUP = createAsyncThunk(
   "signup",
   async (userData, { rejectWithValue}) => {
     try {
-      const resp = await axios.post(`http://localhost:3000/api/v1/user/${userData[1].type}`, userData[0]); 
+      const resp = await axios.post(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/v1/user/${userData[1].type}`, userData[0]); 
       console.log(resp.data);
       // Directly pass userData as the body
 

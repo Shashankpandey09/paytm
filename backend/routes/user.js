@@ -1,11 +1,13 @@
 const express = require("express");
 const JWT = require("jsonwebtoken");
 const { USER, Account } = require("../db");
-const { JWT_SECRET_KEY } = require("../config");
 const authMiddleware = require("../middleware");
 const { z } = require("zod");
-
+require('dotenv').config();
+const mongoose=require('mongoose')
 const UserRouter = express.Router();
+const JWT_SECRET_KEY  = process.env.JWT_SECRET_KEY
+
 
 // Sign-Up Schema
 const signUpSchema = z.object({
@@ -117,7 +119,7 @@ UserRouter.get('/bulk', authMiddleware, async (req, res) => {
 
     return res.json({
       users: users
-        .filter((me) => req.user.user_id.toString() !== me._id.toString())
+        .filter((me) => req.user.user_id.toString() !== me._id.toS)
         .map((user) => ({
           username: user.username,
           firstName: user.firstName,
@@ -130,6 +132,24 @@ UserRouter.get('/bulk', authMiddleware, async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 });
+UserRouter.get('/users', authMiddleware, async (req, res) => {
+  const { user_id } = req.user;
+
+  try {
+    // Ensure user_id is an ObjectId if your _id fields are of type ObjectId
+    const users = await USER.aggregate([
+      { $match: { _id: { $ne: new mongoose.Types.ObjectId(user_id) } } }, // Exclude the logged-in user
+      { $sample: { size: 10 } } // Fetch 10 random users
+    ]);
+
+    res.json({ users });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: 'Error fetching users', error });
+  }
+});
+
+
 
 
 module.exports = UserRouter;

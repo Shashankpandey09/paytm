@@ -1,1 +1,16 @@
-node_modules
+# Node.js dependencies
+/node_modules
+
+# Environment variables file
+.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional: IDE and editor-specific files
+.vscode/
+.idea/
+.DS_Store
+*.log

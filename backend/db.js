@@ -1,5 +1,6 @@
-const mongoose=require('mongoose');
-mongoose.connect("mongodb+srv://shashankpandey0910:qkVRBnMoeHmHKlez@cluster0.p5ln8mo.mongodb.net/Basic-Paytm");
+require('dotenv').config(); // Load environment variables from .env file
+const mongoose = require('mongoose');
+mongoose.connect(`${process.env.MONGOOSE_URL}`);
 //creating UserSchema;
 const UserSchema=new mongoose.Schema({
     firstName: {

@@ -13,7 +13,7 @@ export const Transfer = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const resp = await axios.post(
-        "http://localhost:3000/api/v1/account/transfer",
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/v1/account/transfer`,
         data,
         {
           headers: {

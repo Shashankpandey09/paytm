@@ -9,10 +9,12 @@ const Users = () => {
   const [users, setUsers] = useState([]);
   const [debouncedValue, setDebouncedValue] = useState("");
   const [inputValue, setInputValue] = useState("");
+  const [loading, setLoading] = useState(false); // For loading state
   const {
     data: { token },
   } = useSelector((state) => state.signup);
 
+  // Debounce effect for search input
   useEffect(() => {
     const id = setTimeout(() => {
       setDebouncedValue(inputValue);
@@ -23,26 +25,28 @@ const Users = () => {
     };
   }, [inputValue]);
 
+  // Fetch users based on search or fetch all users if search is empty
   useEffect(() => {
     const getUsers = async () => {
+      setLoading(true); // Set loading true before API call
       try {
+        let url = `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/v1/user/users`; // Default URL for all users
         if (debouncedValue) {
-          const resp = await axios.get(
-            `http://localhost:3000/api/v1/user/bulk?filter=${debouncedValue}`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          console.log(resp.data?.users);
-          setUsers(resp.data?.users);
-        } else {
-          setUsers([]); // Reset users if input is cleared
+          url = `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/v1/user/bulk?filter=${debouncedValue}`; // If searching, use filter
         }
+
+        const resp = await axios.get(url, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+         console.log(resp.data)
+        setUsers(resp.data?.users || []);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false); // Turn off loading
       }
     };
 
@@ -61,11 +65,17 @@ const Users = () => {
           className="w-full px-3 py-2 border rounded-lg border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div className="space-y-4">
-        {users?.map((user) => (
-          <User key={user._id} user={user} />
-        ))}
-      </div>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="space-y-4">
+          {users.length ? (
+            users.map((user) => <User key={user._id} user={user} />)
+          ) : (
+            <div>No users found.</div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
