@@ -1,4 +1,4 @@
-const { JWT_SECRET_KEY } = require("./config");
+const  JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const JWT=require('jsonwebtoken');
 
 const authMiddleware = (req, res, next) => {
