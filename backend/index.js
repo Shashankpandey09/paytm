@@ -1,21 +1,26 @@
-const express = require("express");
-const app=express();
+const express = require('express');
+const cors = require('cors');
+const app = express();
 require('dotenv').config();
-app.use(express.json());//for parsing body and putting the body in the req.body
-const cors=require('cors');
-const PORT=process.env.PORT; 
-const rootRouter=require('./routes/index')
 
+// Define your port
+const PORT = process.env.PORT || 3000;
 
-
+// CORS Configuration
 app.use(cors({
-    origin: 'https://paytm-6iqj.vercel.app',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
-  }));
+  origin: 'https://paytm-6iqj.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
-app.use("/api/v1", rootRouter);
+// Handle OPTIONS requests for CORS preflight
+app.options('*', cors()); // This ensures preflight requests are handled
 
-app.listen(PORT,()=>{
-    console.log(`listening on port ${PORT}`);
-})
+// Define routes
+const rootRouter = require('./routes/index');
+app.use('/api/v1', rootRouter);
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
