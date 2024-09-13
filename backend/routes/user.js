@@ -54,8 +54,8 @@ const signInSchema = z.object({
 
 // Sign-In Route
 UserRouter.post("/signIn", async (req, res) => {
-  const body = req.body;
-  const { success, error } = signInSchema.safeParse(body);
+  const {data} = req.body;
+  const { success, error } = signInSchema.safeParse(data);
 
   if (!success) {
     return res.status(400).json({ message: "Error while logging in", errors: error.errors });
