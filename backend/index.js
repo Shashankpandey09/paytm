@@ -8,7 +8,10 @@ const rootRouter=require('./routes/index')
 
 
 
-app.use(cors());
+
+app.use(cors({
+  origin: 'https://paytm-6iqj.vercel.app',
+}));
 
 
 app.use("/api/v1", rootRouter);
