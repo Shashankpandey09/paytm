@@ -87,12 +87,17 @@ function User({ user }) {
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 rounded-md shadow-sm">
       <div className="flex items-center">
-        <div className="h-12 w-12 bg-slate-300 flex justify-center items-center rounded-full text-xl font-semibold text-white">
+        <div className="h-12 w-12 bg-black flex justify-center capitalize items-center rounded-full text-xl font-semibold text-white">
           {user.firstName[0]}
         </div>
-        <div className="ml-4 text-lg font-medium uppercase">
+        <div>
+        <div className="ml-4 text-lg font-medium uppercase ">
           {user.firstName} {user.lastName}
         </div>
+        <span className="pl-2 opacity-40">{user.username}</span>
+        </div>
+       
+       
       </div>
       <Button
         label="Send Money"
